@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title><%=config.title%> Voizly - Empowering Your Voice, Elevating Your Business</title>
+  <link rel="stylesheet" href="/css/landing.css">
+
+  <link rel="shortcut icon" href="/icons/logo_.png" type="image/x-icon">
+  <link rel="stylesheet" href="/css/widget-style.css" />
+</head>
+<body>
+    <style>
+   a, .dot{
+        color:<%= config.accent_color || "#205cd4" %>  !important;
+    }
+        .send-btn {
+            background: linear-gradient(135deg, <%= config.accent_color || "#205cd4" %>, <%= config.primary_color || "#0853ff" %> ) 
+        }
+    </style>
+
+  <div class="contact-widget-wrapper visible"> <!-- Always visible now -->
+    <div class="contact-widget-container">
+      <div class="left">
+        <h3><%= config.welcome_message || 'Hi, there 👋' %> </h3>
+        <div class="start_buttons">
+            <a href="/chat?id=<%=config.widget_id %>&room=<%= chat_id %>"><button>Start a Conversation</button></a>
+            <a href="/contact?id=<%=config.widget_id %>"><button>Send Us a Message</button></a>
+            <a href="/review?id=<%=config.widget_id %>"><button>Leave a Review</button></a>
+
+        </div>
+      </div>
+
+      <div class="right">
+        <h3><%= config.right_title || 'DROP IN OUR OFFICE' %> <span class="dot">.</span></h3>
+        <p><strong><%= config.city || 'City' %></strong><br>
+        <%= config.address || '123 Main Street' %><br>
+        <%= config.country || 'Country' %></p>
+        <p><a href="mailto:<%= config.email %>"><%= config.email %></a><br>
+        <%= config.phone %></p>
+        <div class="social-icons">
+          <% if (config.socials && config.socials.length > 0) { %>
+            <% config.socials.forEach(function(s) { %>
+              <a href="<%= s.url %>" target="_blank"><%= s.icon %></a>
+            <% }); %>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

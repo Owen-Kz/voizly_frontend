@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title><%=config.title%> Voizly - Empowering Your Voice, Elevating Your Business</title>
+  <link rel="stylesheet" href="/css/landing.css">
+
+  <link rel="shortcut icon" href="/icons/logo_.png" type="image/x-icon">
+  <link rel="stylesheet" href="/css/widget-iframe.css" />
+
+  <link rel="stylesheet" href="/css/widget-style.css" />
+  <style>
+  a, .dot{
+        color:<%= config.accent_color || "#205cd4" %>  !important;
+    }
+    .send-btn {
+        background: linear-gradient(135deg, <%= config.accent_color || "#205cd4" %>, <%= config.primary_color || "#0853ff" %> ) 
+    }
+    .send-btn:hover {
+    background: linear-gradient(135deg, <%= config.primary_color || "#0853ff" %>, <%= config.accent_color || "#205cd4" %>);
+  }
+</style>
+</head>
+<body>
+ 
+      
+      
+
+  <div class="contact-widget-wrapper visible"> <!-- Always visible now -->
+    <div class="contact-widget-container">
+      <div class="left">
+        
+       <div class="widget_navigation_container">
+        <a href="/chat?id=<%= config.widget_id %>&room=<%=chat_id%>">Start a conversation</a>
+        |
+        <a href="/review?id=<%= config.widget_id %>">Leave a Review</a>
+        
+       </div>
+        <h3><%= config.title || 'SEND US A MESSAGE' %> <span class="dot">.</span></h3>
+        <form action="<%= config.form_action || '/submit' %>" method="POST">
+          <input type="text" name="name" placeholder="Your Full Name*" required>
+          <input type="email" name="email" placeholder="Email Address*" required>
+          <textarea name="message" placeholder="Tell us about your project..." required></textarea>
+      
+          <button type="submit" class="send-btn"><%= config.button_text || 'SEND TO US!' %></button>
+        </form>
+      </div>
+
+      <div class="right">
+        <h3><%= config.right_title || 'DROP IN OUR OFFICE' %> <span class="dot">.</span></h3>
+        <p><strong><%= config.city || 'City' %></strong><br>
+        <%= config.address || '123 Main Street' %><br>
+        <%= config.country || 'Country' %></p>
+        <p><a href="mailto:<%= config.email %>"><%= config.email %></a><br>
+        <%= config.phone %></p>
+        <div class="social-icons">
+          <% if (config.socials && config.socials.length > 0) { %>
+            <% config.socials.forEach(function(s) { %>
+              <a href="<%= s.url %>" target="_blank"><%= s.icon %></a>
+            <% }); %>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

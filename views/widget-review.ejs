@@ -1,0 +1,346 @@
+<!-- Multi-step form with progress bar -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title><%= config.title %> Voizly - Empowering Your Voice, Elevating Your Business</title>
+  <link rel="stylesheet" href="/css/landing.css">
+  <link rel="shortcut icon" href="/icons/logo_.png" type="image/x-icon">
+  <link rel="stylesheet" href="/css/widget-iframe.css" />
+  <link rel="stylesheet" href="/css/widget-style.css" />
+  <style>
+    a, .dot {
+      color: <%= config.accent_color || "#205cd4" %> !important;
+    }
+    .send-btn {
+      background: linear-gradient(135deg, <%= config.accent_color || "#205cd4" %>, <%= config.primary_color || "#0853ff" %>);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      margin-top: 15px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .send-btn:hover {
+      background: linear-gradient(135deg, <%= config.primary_color || "#0853ff" %>, <%= config.accent_color || "#205cd4" %>);
+    }
+    .step { display: none; }
+    .step.active { display: block; }
+    .question { margin: 15px 0; }
+    .progress-container {
+      width: 100%;
+      background-color: #eee;
+      height: 8px;
+      margin-bottom: 20px;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background-color: <%= config.accent_color || "#205cd4" %>;
+      transition: width 0.3s ease;
+    }
+    .step {
+      display: none;
+    }
+    .step.active {
+      display: block;
+    }
+    .question {
+      margin: 15px 0;
+      font-weight: bold;
+    }
+    .rating-options {
+      display: flex;
+      gap: 15px;
+      margin-top: 10px;
+    }
+    .rating-options {
+    display: flex;
+    flex-direction: row;
+    gap: 10px; /* spacing between each radio option */
+}
+
+.rating-options label, .buttons_container {
+    display: flex;
+    align-items: center; /* vertically centers radio and text */
+    gap: 8px; /* space between radio and label text */
+    cursor: pointer;
+    padding: 5px;
+}
+
+.rating-options input {
+    margin: 0; /* removes default margins */
+    width: 16px; /* consistent width */
+    height: 16px; /* consistent height */
+    cursor: pointer;
+}
+
+.rating-options label div {
+    padding: 5px;
+    flex-grow: 1; /* allows the div to take remaining space */
+}
+.error-message{
+    color: red;
+    font-size: 12px;
+}
+  </style>
+ 
+   
+ 
+</head>
+<body>
+  <div class="contact-widget-wrapper visible">
+    <div class="contact-widget-container">
+      <div class="left">
+        <div class="widget_navigation_container">
+          <a href="/chat?id=<%= config.widget_id %>&room=<%= chat_id %>">Start a conversation</a> |
+          <a href="/contact?id=<%= config.widget_id %>">Leave us a Message</a>
+        </div>
+
+        <h3><%= config.review_title || 'Tell us what you think' %> <span class="dot">.</span></h3>
+        <div class="progress-container">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+        <div class="error-message"></div>
+
+        <form id="reviewForm">
+          <div id="stepContainer"></div>
+
+          <div class="step" id="finalStep">
+            <input type="text" name="name" placeholder="Your Full Name*" required>
+            <input type="email" name="email" placeholder="Email Address*" required>
+            <button type="submit" class="send-btn"><%= config.button_text || 'SEND TO US!' %></button>
+          </div>
+        </form>
+      </div>
+
+      <div class="right">
+        <h3><%= config.right_title || 'DROP IN OUR OFFICE' %> <span class="dot">.</span></h3>
+        <p><strong><%= config.city || 'City' %></strong><br>
+        <%= config.address || '123 Main Street' %><br>
+        <%= config.country || 'Country' %></p>
+        <p><a href="mailto:<%= config.email %>"><%= config.email %></a><br>
+        <%= config.phone %></p>
+        <div class="social-icons">
+          <% if (config.socials && config.socials.length > 0) { %>
+            <% config.socials.forEach(function(s) { %>
+              <a href="<%= s.url %>" target="_blank"><%= s.icon %></a>
+            <% }); %>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const questions = <%- JSON.stringify(widget_review_questions || []) %>;
+    const stepContainer = document.getElementById("stepContainer");
+    const messageContainer = document.querySelector(".error-message")
+    const progressBar = document.getElementById("progressBar");
+  
+    let currentStep = 0;
+    const totalSteps = questions.length + 1;
+  
+    function updateProgress(stepIndex) {
+      const percentage = ((stepIndex + 1) / totalSteps) * 100;
+      progressBar.style.width = `${percentage}%`;
+    }
+  
+    function renderSteps() {
+      stepContainer.innerHTML = "";
+      updateProgress(currentStep);
+  
+      questions.forEach((q, index) => {
+        const stepDiv = document.createElement("div");
+        stepDiv.classList.add("step");
+        if (index === currentStep) stepDiv.classList.add("active");
+  
+        const stepCounter = document.createElement("div");
+        stepCounter.className = "step-counter";
+        stepCounter.textContent = `Step ${index + 1} of ${questions.length}`;
+        stepDiv.appendChild(stepCounter);
+  
+        const label = document.createElement("label");
+        label.className = "question";
+        label.textContent = q.question;
+        stepDiv.appendChild(label);
+  
+        if (q.type === "rating" || q.type === "yesno") {
+          const optionsContainer = document.createElement("div");
+          optionsContainer.className = "rating-options";
+          
+          // Add hidden required field for radio group validation
+          const hiddenInput = document.createElement("input");
+          hiddenInput.type = "hidden";
+          hiddenInput.name = `question_${index}`;
+          hiddenInput.required = true;
+          optionsContainer.appendChild(hiddenInput);
+          
+          q.options.forEach(opt => {
+            const labelEl = document.createElement("label");
+  
+            const radio = document.createElement("input");
+            radio.type = "radio";
+            radio.name = `question_${index}`;
+            radio.value = opt;
+            
+            // Add event listener to update hidden input when selection changes
+            radio.addEventListener('change', function() {
+              if(this.checked) {
+                hiddenInput.value = opt;
+              }
+            });
+  
+            labelEl.appendChild(radio);
+            const createTextContainer = document.createElement("div")
+            createTextContainer.appendChild(document.createTextNode(opt))
+            labelEl.appendChild(createTextContainer);
+            optionsContainer.appendChild(labelEl);
+          });
+          stepDiv.appendChild(optionsContainer);
+        } else if (q.type === "text") {
+          const textarea = document.createElement("textarea");
+          textarea.name = `question_${index}`;
+        //   textarea.required = true;
+          textarea.style.width = "100%";
+          textarea.style.minHeight = "80px";
+          stepDiv.appendChild(textarea);
+        } else if(q.type === "checkbox") {
+          const optionsContainer = document.createElement("div");
+          optionsContainer.className = "rating-options";
+          
+          // Add hidden field for checkbox group validation
+          const hiddenInput = document.createElement("input");
+          hiddenInput.type = "hidden";
+          hiddenInput.name = `question_${index}`;
+          hiddenInput.dataset.required = "true"; // Custom attribute for validation
+          optionsContainer.appendChild(hiddenInput);
+          
+          q.options.forEach(opt => {
+            const labelEl = document.createElement("label");
+  
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.name = `question_${index}`;
+            checkbox.value = opt;
+            
+            // Update hidden input when checkbox changes
+            checkbox.addEventListener('change', function() {
+              const checkedBoxes = optionsContainer.querySelectorAll(`input[type="checkbox"]:checked`);
+              hiddenInput.value = Array.from(checkedBoxes).map(cb => cb.value).join(', ');
+            });
+  
+            labelEl.appendChild(checkbox);
+            const createTextContainer = document.createElement("div")
+            createTextContainer.appendChild(document.createTextNode(opt))
+            labelEl.appendChild(createTextContainer);
+            optionsContainer.appendChild(labelEl);
+          });
+          stepDiv.appendChild(optionsContainer);
+        }
+  
+        const buttonContainer = document.createElement("div");
+        buttonContainer.classList.add("buttons_container")
+  
+        if (index > 0) {
+          const backBtn = document.createElement("button");
+          backBtn.type = "button";
+          backBtn.className = "send-btn";
+          backBtn.textContent = "Back";
+          backBtn.onclick = () => {
+            currentStep--;
+            renderSteps();
+          };
+          buttonContainer.appendChild(backBtn);
+        }
+  
+        const nextBtn = document.createElement("button");
+        nextBtn.type = "button";
+        nextBtn.className = "send-btn";
+        nextBtn.textContent = (index + 1 < questions.length) ? "Next" : "Continue";
+        nextBtn.onclick = () => {
+          // Validate current step
+          let isValid = true;
+          
+          if (q.type === "text") {
+            const textarea = stepDiv.querySelector("textarea");
+            if (!textarea.value.trim()) {
+              textarea.focus();
+              isValid = false;
+            }
+          } 
+          else if (q.type === "rating" || q.type === "yesno") {
+            const selected = stepDiv.querySelector(`input[type="radio"]:checked`);
+            if (!selected) {
+              messageContainer.innerText = 'Please Select an Option'
+              isValid = false;
+            }
+             
+          }
+          else if (q.type === "checkbox") {
+            const checked = stepDiv.querySelectorAll(`input[type="checkbox"]:checked`);
+            if (checked.length === 0) {
+                 messageContainer.innerText = 'Please select at least one option'
+             
+              isValid = false;
+            }
+            
+            
+          }
+  
+          if (isValid) {
+            messageContainer.innerText = ''
+            currentStep++;
+            if (currentStep < questions.length) {
+              renderSteps();
+            } else {
+              stepContainer.style.display = "none";
+              document.getElementById("finalStep").classList.add("active");
+            }
+          }
+        };
+        buttonContainer.appendChild(nextBtn);
+  
+        stepDiv.appendChild(buttonContainer);
+        stepContainer.appendChild(stepDiv);
+      });
+    }
+  
+    renderSteps();
+  
+    document.getElementById("reviewForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const payload = {
+        name: formData.get("name"),
+        email: formData.get("email"),
+        answers: questions.map((q, i) => ({
+          question: q.question,
+          answer: formData.get(`question_${i}`)
+        }))
+      };
+  
+      try {
+        const res = await fetch("/api/submit-review", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          alert("Thank you for your feedback!");
+          this.reset();
+          location.reload();
+        } else {
+          alert("Error submitting review.");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Failed to send review.");
+      }
+    });
+  </script>
+</body>
+</html>

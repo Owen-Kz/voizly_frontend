@@ -1,0 +1,184 @@
+<!-- Multi-step form with progress bar -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title><%= config.title %> Voizly - Empowering Your Voice, Elevating Your Business</title>
+  <link rel="stylesheet" href="/css/landing.css">
+  <link rel="shortcut icon" href="/icons/logo_.png" type="image/x-icon">
+  <link rel="stylesheet" href="/css/widget-iframe.css" />
+  <link rel="stylesheet" href="/css/widget-style.css" />
+  <style>
+    a, .dot {
+      color: <%= config.accent_color || "#205cd4" %> !important;
+    }
+    .send-btn {
+      background: linear-gradient(135deg, <%= config.accent_color || "#205cd4" %>, <%= config.primary_color || "#0853ff" %>);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      margin-top: 15px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .send-btn:hover {
+      background: linear-gradient(135deg, <%= config.primary_color || "#0853ff" %>, <%= config.accent_color || "#205cd4" %>);
+    }
+    .step { display: none; }
+    .step.active { display: block; }
+    .question { margin: 15px 0; }
+    .progress-container {
+      width: 100%;
+      background-color: #eee;
+      height: 8px;
+      margin-bottom: 20px;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background-color: <%= config.accent_color || "#205cd4" %>;
+      transition: width 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+  <div class="contact-widget-wrapper visible">
+    <div class="contact-widget-container">
+      <div class="left">
+        <div class="widget_navigation_container">
+          <a href="/chat?id=<%= config.widget_id %>&room=<%= chat_id %>">Start a conversation</a> |
+          <a href="/contact?id=<%= config.widget_id %>">Leave us a Message</a>
+        </div>
+
+        <h3><%= config.review_title || 'Tell us what you think' %> <span class="dot">.</span></h3>
+
+        <div class="progress-container">
+          <div class="progress-bar" id="progressBar"></div>
+        </div>
+
+        <form id="reviewForm">
+          <div id="stepContainer"></div>
+
+          <div class="step" id="finalStep">
+            <input type="text" name="name" placeholder="Your Full Name*" required>
+            <input type="email" name="email" placeholder="Email Address*" required>
+            <button type="submit" class="send-btn"><%= config.button_text || 'SEND TO US!' %></button>
+          </div>
+        </form>
+      </div>
+
+      <div class="right">
+        <h3><%= config.right_title || 'DROP IN OUR OFFICE' %> <span class="dot">.</span></h3>
+        <p><strong><%= config.city || 'City' %></strong><br>
+        <%= config.address || '123 Main Street' %><br>
+        <%= config.country || 'Country' %></p>
+        <p><a href="mailto:<%= config.email %>"><%= config.email %></a><br>
+        <%= config.phone %></p>
+        <div class="social-icons">
+          <% if (config.socials && config.socials.length > 0) { %>
+            <% config.socials.forEach(function(s) { %>
+              <a href="<%= s.url %>" target="_blank"><%= s.icon %></a>
+            <% }); %>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const questions = <%- JSON.stringify(widget_review_questions || []) %>;
+    const stepContainer = document.getElementById("stepContainer");
+    const progressBar = document.getElementById("progressBar");
+
+    let currentStep = 0;
+    const totalSteps = questions.length + 1;
+
+    function updateProgress(stepIndex) {
+      const percentage = ((stepIndex + 1) / totalSteps) * 100;
+      progressBar.style.width = `${percentage}%`;
+    }
+
+    questions.forEach((q, index) => {
+      const stepDiv = document.createElement("div");
+      stepDiv.classList.add("step");
+      if (index === 0) stepDiv.classList.add("active");
+
+      const label = document.createElement("label");
+      label.className = "question";
+      label.textContent = q.question;
+      stepDiv.appendChild(label);
+
+      if (q.type === "rating") {
+        q.options.forEach(opt => {
+          const radio = document.createElement("input");
+          radio.type = "radio";
+          radio.name = `question_${index}`;
+          radio.value = opt;
+          radio.required = true;
+          stepDiv.appendChild(radio);
+          stepDiv.appendChild(document.createTextNode(` ${opt} `));
+        });
+      } else if (q.type === "text") {
+        const input = document.createElement("textarea");
+        input.name = `question_${index}`;
+        input.required = true;
+        stepDiv.appendChild(input);
+      }
+
+      const nextBtn = document.createElement("button");
+      nextBtn.type = "button";
+      nextBtn.textContent = "Next";
+      nextBtn.className = "send-btn";
+      nextBtn.onclick = () => {
+        stepDiv.classList.remove("active");
+        currentStep++;
+        if (index + 1 < questions.length) {
+          document.querySelectorAll(".step")[index + 1].classList.add("active");
+        } else {
+          document.getElementById("finalStep").classList.add("active");
+        }
+        updateProgress(currentStep);
+      };
+      stepDiv.appendChild(nextBtn);
+
+      stepContainer.appendChild(stepDiv);
+    });
+
+    updateProgress(currentStep);
+
+    document.getElementById("reviewForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+      const payload = {
+        name: formData.get("name"),
+        email: formData.get("email"),
+        answers: questions.map((q, i) => ({
+          question: q.question,
+          answer: formData.get(`question_${i}`)
+        }))
+      };
+
+      try {
+        const res = await fetch("/api/submit-review", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        if (res.ok) {
+          alert("Thank you for your feedback!");
+          this.reset();
+          location.reload();
+        } else {
+          alert("Error submitting review.");
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Failed to send review.");
+      }
+    });
+  </script>
+</body>
+</html>
