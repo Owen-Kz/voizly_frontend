@@ -9,7 +9,7 @@
   <link rel="shortcut icon" href="/icons/logo_.png" type="image/x-icon">
   <link rel="stylesheet" href="/css/widget-style.css" />
 </head>
-<body>
+<body >
     <style>
    a, .dot{
         color:<%= config.accent_color || "#205cd4" %>  !important;
@@ -19,8 +19,8 @@
         }
     </style>
 
-  <div class="contact-widget-wrapper visible"> <!-- Always visible now -->
-    <div class="contact-widget-container">
+  <div class="contact-widget-wrapper scroll-container visible"> <!-- Always visible now -->
+    <div class="contact-widget-container ">
       <div class="left">
         <h3><%= config.welcome_message || 'Hi, there 👋' %> </h3>
         <div class="start_buttons">

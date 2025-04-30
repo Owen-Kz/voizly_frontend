@@ -8,9 +8,11 @@
     background: #fef6f6;
     /* border-radius: 20px; */
     height: 100%;
+    scroll-behavior: smooth;
+    overscroll-behavior: none;
     max-width: 100%;
-    box-shadow: 0 40px 80px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+    /* box-shadow: 0 40px 80px rgba(0, 0, 0, 0.1); */
+    overflow-y: scroll;
   }
   .left, .right {
     flex: 1 1 50%;
@@ -117,4 +119,35 @@
     outline: none;
     color: white;
     border-radius: 24px;
+}
+
+
+.scroll-container {
+  overflow: hidden; /* hide scrollbar by default */
+  padding-right: 5px; /* optional spacing to avoid content cut-off */
+  position: relative;
+}
+
+.scroll-container:hover {
+  overflow: auto; /* show scrollbar on hover */
+}
+
+/* Scrollbar styles */
+.scroll-container::-webkit-scrollbar {
+  width: 4px;
+  height: 8px; /* for horizontal scroll, if any */
+}
+
+.scroll-container::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+/* Optional: shorter scrollbar effect */
+.scroll-container::-webkit-scrollbar-thumb:vertical {
+  min-height: 40px;
 }
