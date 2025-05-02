@@ -40,7 +40,7 @@
     height: max-content;
     margin: 0;
     padding: 0;
-    /* overflow-x: hidden; */
+    overflow-x: hidden;
     /* font-family: 'Arial', sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Noto Sans", "Liberation Sans",; */
     background-color: var(--gradient);
     color: #333;
