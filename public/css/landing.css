@@ -59,7 +59,7 @@
   }
   
   .main-content {
-    background-color: brown;
+    /* background-color: brown; */
     flex: 1; /* pushes footer to the bottom if content is short */
   }
   
@@ -248,9 +248,10 @@
     justify-content: space-evenly;
     padding: 50px 0;
     width: 98%;
-    height: 90vh;
+    min-height: 60vh;
+    height: max-content;
     margin: auto;
-    border-radius: 100px;
+    border-radius: 40px;
     /* border-bottom-left-radius: 100px;
     border-bottom-right-radius: 100px; */
     text-align:left;
@@ -269,11 +270,14 @@
     color: var(--primary-color);
   }
   #features .imageContainer{
-    height: 80%;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   #features .imageContainer img{
-    width: 100%;
-    height: 100%;
+    width: 50%;
+    height: 50%;
     object-fit: contain;
   }
   #features h2 {
@@ -354,7 +358,7 @@
     flex-direction: column;
     color: white;
     padding: 50px 0;
-    height:80vh;
+    height:max-content;
     text-align: center;
   }
   
@@ -503,3 +507,74 @@
     transform: translateY(0);
   }
   
+
+  .mobileButton{
+    display: none;
+  }
+  @media screen and (max-width:700px), (max-width:1080px) {
+    #hero{
+      height: 80vh;
+      justify-content: flex-start;
+      padding-top: 150px;
+    }
+    header {
+      width: 90vw;
+      max-height: 70px;
+      overflow: hidden;
+      transition: max-height 300ms ease;
+      align-items: center;
+    }
+    
+    .mobileHeader {
+      max-height: 300px; /* or whatever the expanded height should be */
+    }
+    
+    .mobileButton{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 40px;
+      align-self: center;
+      width: 70px;
+      cursor: pointer;
+      height: 70px;
+    }
+    .navContainer{
+      flex-direction: column;
+      justify-content: space-between;
+      
+    }
+    .searchContainer{
+      width: 80%;
+    }
+    .navLeft{
+      width: 100%;
+      justify-content: flex-start;
+    }
+    nav ul{
+      /* display: none; */
+      width: 100%;
+      align-items: center;
+      flex-direction: column;
+    }
+    nav ul li{
+      margin: 0px;
+      padding: 10px;
+    }
+    #pricing{
+      justify-content: flex-start;
+    }
+    .layers{
+      overflow: hidden;
+    }
+    #features{
+      flex-direction: column-reverse;
+      border-radius: 25px;
+      justify-content: flex-end;
+      
+    }
+    .imageContainer{
+      width: 60%;
+      height: none;
+    }
+  }

@@ -26,7 +26,7 @@
  
       
       
-
+  <%- include("powered-by") %>
   <div class="contact-widget-wrapper visible"> <!-- Always visible now -->
     <div class="contact-widget-container">
       <div class="left">
@@ -48,7 +48,7 @@
       </div>
 
       <div class="right">
-        <h3><%= config.right_title || 'DROP IN OUR OFFICE' %> <span class="dot">.</span></h3>
+        <h3 style="color: rgb(230, 243, 241) !important;"><%= config.right_title || 'DROP IN OUR OFFICE' %> <span class="dot">.</span></h3>
         <p><strong><%= config.city || 'City' %></strong><br>
         <%= config.address || '123 Main Street' %><br>
         <%= config.country || 'Country' %></p>

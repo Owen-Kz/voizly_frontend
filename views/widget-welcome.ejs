@@ -18,10 +18,12 @@
             background: linear-gradient(135deg, <%= config.accent_color || "#205cd4" %>, <%= config.primary_color || "#0853ff" %> ) 
         }
     </style>
-
+ <%- include("powered-by") %>
   <div class="contact-widget-wrapper scroll-container visible"> <!-- Always visible now -->
     <div class="contact-widget-container ">
       <div class="left">
+     
+
         <h3><%= config.welcome_message || 'Hi, there 👋' %> </h3>
         <div class="start_buttons">
             <a href="/chat?id=<%=config.widget_id %>&room=<%= chat_id %>"><button>Start a Conversation</button></a>
@@ -32,7 +34,7 @@
       </div>
 
       <div class="right">
-        <h3><%= config.right_title || 'DROP IN OUR OFFICE' %> <span class="dot">.</span></h3>
+        <h3 style="color: rgb(230, 243, 241) !important;"><%= config.right_title || 'DROP IN OUR OFFICE' %> <span class="dot">.</span></h3>
         <p><strong><%= config.city || 'City' %></strong><br>
         <%= config.address || '123 Main Street' %><br>
         <%= config.country || 'Country' %></p>

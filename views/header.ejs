@@ -1,5 +1,5 @@
 
-<header>
+<header class="" id="header">
     <div class="navContainer">
       <div class="navLeft">
         <div class="icon-container">
@@ -9,6 +9,9 @@
         <div class="icon-text">
           <h2>Voizly</h2>
           <p>Empowering Your Voice, Elevating Your Business.</p>
+        </div>
+        <div class="mobileButton" id="mobileButton">
+          <i class="fa fa-bars"></i>
         </div>
       </div>
       <nav>
@@ -23,3 +26,15 @@
       </nav>
     </div>
   </header>
+
+
+
+  <script>
+    const mobileButton = document.getElementById("mobileButton")
+    const mobileHeader = document.getElementById("header")
+
+    mobileButton.addEventListener("click", function(){
+      mobileHeader.classList.toggle("mobileHeader")
+    })
+
+</script>

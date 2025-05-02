@@ -6,7 +6,7 @@
     --gradient: #205cd4;
   --bs-gradient: linear-gradient(200deg, #0853ff, #205cd4);
   --bs-gradient-reverse: linear-gradient(200deg, #205cd4, #0853ff);
-
+  --white-bg: rgb(230, 243, 241);
   --box-shadow-80:0px 9px 10px 0px rgba(0, 0, 0, 0.13);
 }
 body{
