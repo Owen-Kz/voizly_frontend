@@ -561,6 +561,13 @@
       margin: 0px;
       padding: 10px;
     }
+    #contact{
+      border-top-right-radius: 20px;
+      border-top-left-radius: 20px;
+    }
+    .contact-form{
+      width: 100vw;
+    }
     #pricing{
       justify-content: flex-start;
     }

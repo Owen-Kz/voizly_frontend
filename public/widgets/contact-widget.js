@@ -5,7 +5,7 @@
 
   if (!userId) return console.error("No widget ID provided.");
 
-  fetch(`http://localhost:3500/api/widgets/${userId}`)
+  fetch(`https://voizly-frontend.vercel.app/api/widgets/${userId}`)
     .then((res) => res.json())
     .then((config) => {
       if (!config) return;
@@ -19,7 +19,7 @@
       // CSS
       const link = document.createElement("link");
       link.rel = "stylesheet";
-      link.href = "http://localhost:3500/css/widget-iframe.css";
+      link.href = "https://voizly-frontend.vercel.app/css/widget-iframe.css";
       shadow.appendChild(link);
 
       // Button to toggle widget
@@ -28,7 +28,7 @@
       
       toggleBtn.setAttribute("style", `background-color:${config.brand_color};`)
       toggleBtn.id = "toggle-btn";
-      toggleBtn.innerHTML = `<img src="http://localhost:3500/icons/logo_.png" width="30px"/>`
+      toggleBtn.innerHTML = `<img src="https://voizly-frontend.vercel.app/icons/logo_.png" width="30px"/>`
       // toggleBtn.textContent = "✉️";
       shadow.appendChild(toggleBtn);
 
@@ -38,7 +38,7 @@ widgetContainer.id = "widget-frame-container";
 widgetContainer.style.display = "none"; // <-- Ensure it's hidden initially
 
 const iframe = document.createElement("iframe");
-iframe.src = `http://localhost:3500/welcome?id=${userId}`;
+iframe.src = `https://voizly-frontend.vercel.app/welcome?id=${userId}`;
 widgetContainer.appendChild(iframe);
 shadow.appendChild(widgetContainer);
 
